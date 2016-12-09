@@ -10,6 +10,7 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
 	}
 
 	$routeProvider.
+		when('/refresher', { templateUrl: 'partials/refresherView.html', controller: 'RefresherCtrl' }).
 		when('/listOrders', { templateUrl: 'partials/listOrders.html', controller: 'ListOrdersCtrl' }).
 		when('/orderdetails/:orderid', {templateUrl: 'partials/orderDetails.html', controller: 'OrderDetailsCtrl'}).
         when('/catalog', { templateUrl: 'partials/categoryView.html', controller: 'CategoryCtrl' }).
@@ -42,5 +43,5 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
 		when('/reports', { templateUrl: 'partials/reportsView.html', controller: 'ReportsCtrl' }).
 		when('/report/:id', { templateUrl: 'partials/Reporting/reportView.html', controller: 'ReportCtrl' }).
 		when('/contactus', { templateUrl: 'partials/Messages/contactus.html' }).
-		otherwise({redirectTo: '/catalog'});
+		otherwise({redirectTo: '/refresher'});
 }]);
