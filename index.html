@@ -16,28 +16,22 @@
     <link rel="stylesheet" href="css/animate.min.css" />
 </head>
 <body ng-cloak ng-class="ng-cloak">
-<section>
-    <section ng-hide="Four51User.isAuthenticated() || isAnon" class="container">
-        <login />
-    </section>
-    <section ng-if="Four51User.isAuthenticated()" id="content">
-        <section class="hidden-print">
-            <navigation />
+    <section>
+        <section ng-hide="Four51User.isAuthenticated() || isAnon" class="container">
+            <login />
         </section>
-        <section class="hidden-print">
-            <branding />
-        </section>
-        <section class="container-view">
-            <ng-view autoscroll />
-        </section>
-        <section class="hidden-print">
-            <copyright ng-if="!user.Permissions.contains('UnBrandedSite')" />
-        </section>
-        <section ng-class="{'ng-hide': isActive('home')}" class="hidden-xs">
-        	<a class="cling" target="_blank" href="http://messenger.providesupport.com/messenger/Prograde.html"><img src="http://logon.prograde.com/2Prograde/liveChat-btn_062815-140px.png" border="0"></a>
+        <section ng-if="Four51User.isAuthenticated()" id="content">
+            <section class="hidden-print">
+                <navigation />
+            </section>
+            <section class="container-view">
+                <ng-view autoscroll />
+            </section>
+            <section class="hidden-print">
+                <copyright ng-if="!user.Permissions.contains('UnBrandedSite')" />
+            </section>
         </section>
     </section>
-</section>
 
     <!--<script type="text/javascript" src="//dl1d2m8ri9v3j.cloudfront.net/releases/1.2.4/tracker.js" data-customer="bfec7bded14d43a7ace2697594e1369d"></script>-->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js" data-group="cdn"></script>
