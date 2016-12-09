@@ -56,6 +56,7 @@ function ($routeParams, $sce, $scope, $451, Category, Product, Nav, $q) {
 
 	// new logic to compile a list of calls for each category InteropID
 	function retreiveAllItems() {
+		console.log('Retreiving all items.');
 		var getAll = [];
 		$scope.products = [];
 		angular.forEach($scope.tree, function(cat){
