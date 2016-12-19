@@ -28,6 +28,10 @@
                     </ul>
                 </nav>
             </div>
+            <button class="btn btn-primary" ng-click="retrieveAllItems()">Update All Items</button>
+            <div>
+                <uib-progressbar class="progress-striped active" ng-show="allProducts.length" max="allProducts.length" value="currentProgress"><span style="color:white; white-space:nowrap;">{{currentProgress}} / {{allProducts.length}}</span></uib-progressbar>
+            </div>
         </aside>
         <div ng-class="{ 'col-md-9': navStatus.visible, 'col-md-12': !navStatus.visible }" >
 
