@@ -33,7 +33,6 @@ function ($routeParams, $sce, $scope, $451, Category, Product, Nav, $q, ProductD
 		$scope.currentCategory ={SubCategories:$scope.tree};
 	}
 
-
 	$scope.$on("treeComplete", function(data){
 		if (!$routeParams.categoryInteropID) {
 			$scope.currentCategory ={SubCategories:$scope.tree};
@@ -86,30 +85,31 @@ function ($routeParams, $sce, $scope, $451, Category, Product, Nav, $q, ProductD
 					$scope.listOProducts[p.ExternalID] = p;
 				}
 			});
-			$scope.productCount = $scope.productCount + count;
 			if ($scope.catInterops[i + 1]){
 				catSearch(i+1);
 			}
 			else {
 				$scope.variantErrors = [];
+				$scope.allProductCount = $scope.allProducts.length;
 				updateAllVariants(0);
 			}
 		}, $scope.settings.currentPage, $scope.settings.pageSize);
 	}
 
 	function updateAllVariants(i) {
-		$scope.currentProgress = i;
-		variantGetter(i, [], 0, 1);
+		$scope.currentProgress = i + 1;
+		$scope.progressMessage = 'Fetching all variants';
+		variantGetter(i, [], 1);
 	}
 
-	function variantGetter(i, variantList, variantCount, page) {
+	function variantGetter(i, variantList, page) {
 		ProductDisplayService.getProductAndVariant($scope.allProducts[i].InteropID, null, function (data) {
-			angular.forEach(data.product.Variants, function(v) {
-				variantList.push(v);
+			angular.forEach(data.product.Variants, function(v, i) {
+				if (!variantList[i] || (variantList[i] && !variantList[i].ExternalID))
+				variantList[i] = v;
 			});
-			variantCount += data.product.Variants.length;
-			if (variantCount < data.product.VariantCount) {
-				variantGetter(i, variantList, variantCount, page + 1)
+			if (variantList[variantList.length - 1] && !variantList[variantList.length - 1].ExternalID) {
+				variantGetter(i, variantList, page + 1)
 			}
 			else {
 				if (variantList.length > 0) {
@@ -123,6 +123,7 @@ function ($routeParams, $sce, $scope, $451, Category, Product, Nav, $q, ProductD
 	}
 
 	function getFullVariant(pi, variantList, vi) {
+		$scope.progressMessage = 'Fetching data for variant #' + (vi + 1) + ' out of ' + variantList.length;
 		ProductDisplayService.getProductAndVariant($scope.allProducts[pi].InteropID, variantList[vi].InteropID, function (data) {
 			variantList[vi] = data.variant;
 			if (variantList[vi + 1]) {
@@ -131,11 +132,37 @@ function ($routeParams, $sce, $scope, $451, Category, Product, Nav, $q, ProductD
 			else {
 				updateVariant(pi, variantList, 0);
 			}
-		}, 1, 100, null);
+		}, 1, 100, null, function(e){
+			$scope.variantErrors.push({
+				Item : $scope.allProducts[pi].ExternalID,
+				Variant : variantList[vi].ExternalID,
+				Errors : e
+			});
+			variantList.splice(vi, 1);
+			if (variantList[vi]) {
+				getFullVariant(pi, variantList, vi);
+			}
+			else if (variantList.length < 1){
+				if ($scope.allProducts[pi + 1]){
+					updateAllVariants(pi + 1);
+				}
+				else {
+					$scope.productLoadingIndicator = false;
+					delete $scope.allProductCount;
+					$scope.completedUpdate = true;
+				}
+			}
+			else {
+				updateVariant(pi, variantList, 0);
+			}
+		});
 	}
 
 	function updateVariant(pi, variantList, vi) {
 		var newErrors = [];
+		$scope.progressMessage = 'Updating data for variant #' + (vi + 1) + ' out of ' + variantList.length;
+		$scope.currentVariantIndex = vi + 1;
+		$scope.productVariantCount = variantList.length;
         angular.forEach(variantList[vi].Specs, function(spec){
 			var newErrors = [];
             if ($scope.variableDatabase[spec.Name]) {
@@ -166,7 +193,9 @@ function ($routeParams, $sce, $scope, $451, Category, Product, Nav, $q, ProductD
 					updateAllVariants(pi + 1);
 				}
 				else {
-					alert('You made it!');
+					$scope.productLoadingIndicator = false;
+					delete $scope.allProductCount;
+					$scope.completedUpdate = true;
 				}
 			});
 		}
@@ -178,7 +207,9 @@ function ($routeParams, $sce, $scope, $451, Category, Product, Nav, $q, ProductD
 				updateAllVariants(pi + 1);
 			}
 			else {
-				alert('You made it!');
+				$scope.productLoadingIndicator = false;
+				delete $scope.allProductCount;
+				$scope.completedUpdate = true;
 			}
 		}
 	}

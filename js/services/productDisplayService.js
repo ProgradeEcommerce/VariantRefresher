@@ -311,13 +311,15 @@ four51.app.factory('ProductDisplayService', ['$sce', '$451', 'Variant', 'Product
 			return null;
 		return product.StaticSpecGroups.SPAProductConfig.Specs[specName].Value || escapeNull;
 	}
-	function _getProductAndVariant(productInteropID, variantInteropID, callback, page, pagesize, searchTerm){
+	function _getProductAndVariant(productInteropID, variantInteropID, callback, page, pagesize, searchTerm, error){
 		Product.clearCache().get(productInteropID, function(data){
 			var p = data;
 			if(variantInteropID){
 				if(p.Type == 'VariableText'){
 					Variant.get({VariantInteropID: variantInteropID, ProductInteropID: p.InteropID }, function(v) {
 						callback({product: p, variant: v});
+					}, function(e){
+						error(e);
 					});
 				}
 				else{

@@ -28,10 +28,13 @@
                     </ul>
                 </nav>
             </div>
-            <button class="btn btn-primary" ng-click="retrieveAllItems()">Update All Items</button>
-            <div>
-                <progressbar class="progress-striped active" ng-show="allProducts.length" max="allProducts.length" value="currentProgress" type="danger"><span style="color:white; white-space:nowrap;">{{currentProgress}} / {{allProducts.length}}</span></progressbar>
+            <div ng-show="allProductCount">
+                <small><strong>Current Item:<br />{{allProducts[currentProgress - 1].Name}}<br />{{allProducts[currentProgress - 1].ExternalID}}</strong></small>
+                <progressbar class="progress-striped active" max="100" value="currentProgress / allProductCount * 100" type="danger"><span style="color:white; white-space:nowrap;">{{currentProgress}} / {{allProducts.length}}</span></progressbar>
+                <progressbar max="100" value="100"><span ng-show="progressMessage" style="color:white; white-space:nowrap;">{{progressMessage}}</span></progressbar>
             </div>
+            <div class="alert alert-success" ng-show="completedUpdate">Variant update complete!</div>
+            <button class="btn btn-primary full-width" ng-click="retrieveAllItems()">Update All Item Variants</button>
         </aside>
         <div ng-class="{ 'col-md-9': navStatus.visible, 'col-md-12': !navStatus.visible }" >
 
